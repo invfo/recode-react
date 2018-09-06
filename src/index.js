@@ -48,6 +48,11 @@ const render = (vdom, parent) => {
     parent.appendChild(node);
     return node;
   }
+  else if (typeof(vdom) === 'string') {
+    const textNode = document.createTextNode(vdom);
+    parent.appendChild(textNode);
+    return textNode;
+  }
 };
 
 const element = (
