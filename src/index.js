@@ -64,10 +64,41 @@ const render = (vdom, parent) => {
 };
 
 const patch = (dom, vdom) => {
-  dom.parentNode.replaceChild(
-    render(vdom, dom.parentNode),
-    dom
-  );
+  if (typeof(vdom) === 'string' && dom instanceof Text) {
+    if (dom.textContent !== vdom) {
+      const newDom = render(vdom, dom.parentNode);
+      dom.parentNode.replaceChild(
+        newDom,
+        dom,
+      );
+      return newDom;
+    }
+    return dom;
+  }
+  else if (typeof(vdom) === 'object' && vdom.type.toUpperCase() === dom.nodeName) {
+    let pool = {};
+
+    dom.childNodes.forEach((child, index) => {
+      pool[index] = child;
+    });
+
+    vdom.children.forEach((child, index) => {
+      if (pool[index]) {
+        const newChild = patch(pool[index], child);
+        if (newChild !== pool[index]) {
+          dom.appendChild(newChild);
+        }
+      }
+    });
+
+    return dom;
+  }
+  else {
+    dom.parentNode.replaceChild(
+      render(vdom, dom.parentNode),
+      dom
+    );
+  }
 };
 
 const element = (
