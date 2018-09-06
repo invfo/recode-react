@@ -63,6 +63,13 @@ const render = (vdom, parent) => {
   }
 };
 
+const patch = (dom, vdom) => {
+  dom.parentNode.replaceChild(
+    render(vdom, dom.parentNode),
+    dom
+  );
+};
+
 const element = (
       <div className="App">
           <h1>Spectators</h1>
@@ -71,8 +78,23 @@ const element = (
       </div>
 );
 
+const newElement = (
+  <div className="App">
+      <h1>Spectators</h1>
+      <div>43</div>
+      <button onClick={() => {console.log('clicked')}}>Add a spectator</button>
+  </div>
+);
 
-render(element, document.getElementById('root'));
+
+const dom = render(element, document.getElementById('root'));
+
+setTimeout(
+  () => {patch(dom, newElement);},
+  3000,
+)
+
+
 // ReactDOM.render(
 //   <App />,
 //   document.getElementById('root')
