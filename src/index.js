@@ -41,6 +41,14 @@ const render = (vdom, parent) => {
   if (typeof(vdom) === 'object') {
     const node = document.createElement(vdom.type);
 
+    Object.keys(vdom.props).map((prop) => {
+      if (prop === 'className') {
+        node.className = vdom.props[prop];
+      } else if (prop === 'onClick') {
+        node.addEventListener('click', vdom.props[prop]);
+      }
+    })
+
     vdom.children.map((child) => {
       render(child, node);
     })
