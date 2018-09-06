@@ -37,6 +37,18 @@ const createElement = (type, props, ...children) => {
   };
 };
 
+const render = (vdom, parent) => {
+  if (typeof(vdom) === 'object') {
+    const node = document.createElement(vdom.type);
+
+    vdom.children.map((child) => {
+      render(child, node);
+    })
+
+    parent.appendChild(node);
+    return node;
+  }
+};
 
 const element = (
       <div className="App">
@@ -47,6 +59,7 @@ const element = (
 );
 
 
+render(element, document.getElementById('root'));
 // ReactDOM.render(
 //   <App />,
 //   document.getElementById('root')
