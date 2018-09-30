@@ -39,7 +39,15 @@ const createElement = (type, props, ...children) => {
 
 const render = (vdom, parent) => {
   if (typeof(vdom) === 'object') {
-    const node = document.createElement(vdom.type);
+
+    let node;
+    if (typeof vdom.type === 'string') {
+      console.log('tag')
+      node = document.createElement(vdom.type);
+    } else if (typeof vdom.type === 'function') {
+      console.log('class')
+      node = Component.render(vdom, parent)
+    }
 
     Object.keys(vdom.props).map((prop) => {
       if (prop === 'className') {
@@ -118,13 +126,62 @@ const newElement = (
 );
 
 
-const dom = render(element, document.getElementById('root'));
+// const dom = render(element, document.getElementById('root'));
 
-setTimeout(
-  () => {patch(dom, newElement);},
-  3000,
-)
+// setTimeout(
+//   () => {patch(dom, newElement);},
+//   3000,
+// )
 
+class Component {
+  constructor(props) {
+    this.props = props;
+    this.state = null;
+  }
+
+  static render(vdom, parent) {
+    const instance = new (vdom.type)(vdom.props);
+    instance.componentWillMount();
+    const element = instance.render()
+    instance.dom = render(element, parent);
+    instance.dom.__reactInstance = instance;
+    instance.componentDidMount();
+    return instance.dom;
+  }
+
+  // static patch(dom, vdom) {
+  //   console.log('patching')
+  // }
+
+  componentWillMount() {}
+
+  componentDidMount() {}
+
+  // setState(nextState) {
+  //   if (this.shouldComponentUpdate(this.props, nextState)) {
+  //     const prevState = this.state;
+  //     this.componentWillUpdate(this.props, nextState);
+  //     this.state = nextState;
+  //     patch(this.base, this.render());
+  //   }
+  // }
+}
+
+class App extends Component {
+  render() {
+    console.log('rendering App');
+    return (
+      <div className="App">
+          <h1>Spectators</h1>
+          <div>42</div>
+          <button onClick={() => {console.log('clicked')}}>Add a spectator</button>
+      </div>
+    );
+  }
+}
+
+const app = <App count={42} />
+render(app, document.getElementById('root'));
 
 // ReactDOM.render(
 //   <App />,
