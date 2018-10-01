@@ -42,10 +42,8 @@ const render = (vdom, parent) => {
 
     let node;
     if (typeof vdom.type === 'string') {
-      console.log('tag')
       node = document.createElement(vdom.type);
     } else if (typeof vdom.type === 'function') {
-      console.log('class')
       node = Component.render(vdom, parent)
     }
 
@@ -64,7 +62,7 @@ const render = (vdom, parent) => {
     parent.appendChild(node);
     return node;
   }
-  else if (typeof(vdom) === 'string') {
+  else if (typeof(vdom) === 'string' || typeof vdom === 'number') {
     const textNode = document.createTextNode(vdom);
     parent.appendChild(textNode);
     return textNode;
@@ -72,7 +70,7 @@ const render = (vdom, parent) => {
 };
 
 const patch = (dom, vdom) => {
-  if (typeof(vdom) === 'string' && dom instanceof Text) {
+  if ((typeof vdom  === 'string' || typeof vdom === 'number') && dom instanceof Text) {
     if (dom.textContent !== vdom) {
       const newDom = render(vdom, dom.parentNode);
       dom.parentNode.replaceChild(
@@ -149,38 +147,58 @@ class Component {
     return instance.dom;
   }
 
-  // static patch(dom, vdom) {
-  //   console.log('patching')
-  // }
+  setState(nextState) {
+    if (this.shouldComponentUpdate(this.props, nextState)) {
+      const prevState = this.state;
+      this.componentWillUpdate(this.props, nextState);
+      this.state = nextState;
+      Component.patch(this.dom, this.render());
+      this.componentDidUpdate(this.props, prevState);
+    } else {
+      this.state = nextState;
+    }
+  }
+
+  static patch(dom, vdom) {
+    dom.__reactInstance.props = vdom.props;
+    return patch(dom, dom.__reactInstance.render());
+  }
 
   componentWillMount() {}
 
   componentDidMount() {}
 
-  // setState(nextState) {
-  //   if (this.shouldComponentUpdate(this.props, nextState)) {
-  //     const prevState = this.state;
-  //     this.componentWillUpdate(this.props, nextState);
-  //     this.state = nextState;
-  //     patch(this.base, this.render());
-  //   }
-  // }
+  componentWillUpdate() {}
+
+  componentDidUpdate() {}
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props != nextProps || this.state != nextState;
+  }
 }
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {count: 0};
+  }
+
+  onClick = () => {
+    this.setState({count: this.state.count + 1})
+  }
+
   render() {
-    console.log('rendering App');
     return (
       <div className="App">
           <h1>Spectators</h1>
-          <div>42</div>
-          <button onClick={() => {console.log('clicked')}}>Add a spectator</button>
+          <div>{this.state.count}</div>
+          <button onClick={this.onClick}>Add a spectator</button>
       </div>
     );
   }
 }
 
-const app = <App count={42} />
+const app = <App />
 render(app, document.getElementById('root'));
 
 // ReactDOM.render(
