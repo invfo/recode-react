@@ -17,12 +17,14 @@ const patch = (dom, vdom) => {
       pool[index] = child;
     });
 
-    vdom.children.forEach((child, index) => {
+    Array().concat(...vdom.children).forEach((child, index) => {
       if (pool[index]) {
         const newChild = patch(pool[index], child);
         if (newChild !== pool[index]) {
           dom.appendChild(newChild);
         }
+      } else {
+        render(child, dom)
       }
     });
 
