@@ -11,6 +11,26 @@ const patch = (dom, vdom) => {
     return dom;
   }
   else if (typeof(vdom) === 'object' && vdom.type.toUpperCase() === dom.nodeName) {
+
+    // update props
+    // used for updating "input" field value
+    for (const attr of dom.attributes) {
+      dom.removeAttribute(attr.name);
+    }
+
+    Object.keys(vdom.props).map(prop => {
+      if (prop === 'className') {
+        dom.className = vdom.props[prop];
+      } else if (prop === 'value') {
+        dom.value = vdom.props[prop];
+      } else if (prop === 'onClick') {
+        dom.addEventListener('click', vdom.props[prop]);
+      } else if (prop === 'onChange') {
+        dom.addEventListener('change', vdom.props[prop]);
+      }
+    });
+
+    // update children
     let pool = {};
 
     dom.childNodes.forEach((child, index) => {
