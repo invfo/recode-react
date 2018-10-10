@@ -13,9 +13,9 @@ const render = (vdom, parent) => {
     })
 
     // gestion des enfants
-    vdom.children.map((child) => {
+    for (const child of [].concat(...vdom.children)) {
       render(child, node);
-    })
+    }
 
     // ajout au DOM
     parent.appendChild(node);
