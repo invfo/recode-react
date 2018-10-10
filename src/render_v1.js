@@ -15,6 +15,8 @@ const render = (vdom, parent) => {
         node.className = vdom.props[prop];
       } else if (prop === 'onClick') {
         node.addEventListener('click', vdom.props[prop]);
+      } else if (prop === 'onChange') {
+        node.addEventListener('change', vdom.props[prop]);
       }
     })
 
