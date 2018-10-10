@@ -1,23 +1,32 @@
-const element = (
-      <div className="App">
-          <h1>Spectators</h1>
-          <div>42</div>
-          <button onClick={() => {console.log('clicked')}}>Add a spectator</button>
-      </div>
-);
-
-const newElement = (
-  <div className="App">
-      <h1>Spectators</h1>
-      <div>43</div>
-      <button onClick={() => {console.log('clicked')}}>Add a spectator</button>
-  </div>
-);
-
-
-// const dom = render(element, document.getElementById('root'));
-
-// setTimeout(
-//   () => {patch(dom, newElement);},
-//   3000,
-// )
+const foo = (
+    <div className="App">
+        <h1>todos</h1>
+        <ul>
+          {['Prepare the talk', 'Get enough sleep'].map(task => <li>{task}</li>)}
+        </ul>
+        <input
+          type='text'
+        />
+        <button>Add</button>
+    </div>
+  );
+  
+  const newFoo = (
+    <div className="App">
+        <h1>todos</h1>
+        <ul>
+          {['Prepare the talk', 'Get enough sleep', 'Bring croissants'].map(task => <li>{task}</li>)}
+        </ul>
+        <input
+          type='text'
+        />
+        <button>Add</button>
+    </div>
+  );
+  
+  const dom = render(foo, document.getElementById('root'))
+  
+  setTimeout(
+    () => {patch(dom, newFoo)},
+    1500
+  )
