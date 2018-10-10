@@ -7,6 +7,8 @@ const render = (vdom, parent) => {
     Object.keys(vdom.props).map((prop) => {
       if (prop === 'className') {
         node.className = vdom.props[prop];
+      } else if (prop === 'value') {
+        node.value = vdom.props[prop];
       } else if (prop === 'onClick') {
         node.addEventListener('click', vdom.props[prop]);
       } else if (prop === 'onChange') {
