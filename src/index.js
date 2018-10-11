@@ -1,29 +1,33 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-// import './index.css';
+import './index.css';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        tasks: ['Prepare my talk', 'Get enough sleep'],
+        tasks: [],
         newTask: ''
     };
   }
 
-  onChange = (event) => {this.setState({newTask: event.target.value})}
+  onChange = (event) => {
+    this.setState({tasks: this.state.tasks, newTask: event.target.value})
+  }
 
   onSubmit = () => {
-    this.setState({tasks: this.state.tasks.concat([this.state.newTask])});
-    this.setState({newTask: ''});
+    this.setState({
+      tasks: this.state.tasks.concat([this.state.newTask]),
+      newTask: ''
+    });
   }
 
   render() {
     return (
-      <div className="App">
+      <div className="todoapp">
           <h1>todos</h1>
           <ul>
-            {this.state.tasks.map(task => <li>{task}</li>)}
+            {this.state.tasks.map(task => <li key={task}>{task}</li>)}
           </ul>
           <input
             type='text'

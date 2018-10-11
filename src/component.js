@@ -1,15 +1,15 @@
 class Component {
   constructor(props) {
     this.props = props;
-    this.state = null;
+    this.state = {};
   }
 
   static render(vdom, parent) {
-    const instance = new (vdom.type)(vdom.props);
+    const instance = new (vdom.type)(vdom.props); // new App(props)
     instance.componentWillMount();
     const element = instance.render()
     instance.dom = render(element, parent);
-    instance.dom.__reactInstance = instance;
+    instance.dom.__reactInstance = instance; // faut-il le garder ?
     instance.componentDidMount();
     return instance.dom;
   }

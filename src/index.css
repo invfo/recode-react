@@ -1,16 +1,15 @@
-body {
-  margin: 0;
-  padding: 0;
+.todoapp {
   font-family: sans-serif;
+  margin: auto;
+  width: 50%;
+
+  text-align: center;
 }
 
-.App {
-  text-align: center;
-  width: 30%;
-  border: 1px black solid;
-  border-radius: 40px;
+ul {
+  list-style-position: inside;
+}
 
-  position: relative;
-  left: 35%;
-  margin-top: 50px;
+li {
+  margin: auto;
 }
