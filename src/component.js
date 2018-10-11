@@ -9,7 +9,6 @@ class Component {
     instance.componentWillMount();
     const element = instance.render() // == element <div><h1>todos</h1>...</div>
     instance.dom = render(element, parent); // on mémorise le DOM rendu
-    instance.dom.__reactInstance = instance;
     instance.componentDidMount();
     return instance.dom;
   }
@@ -20,7 +19,7 @@ class Component {
       this.componentWillUpdate(this.props, nextState);
   
       this.state = nextState;
-      patch(this.dom, this.dom.__reactInstance.render());
+      patch(this.dom, this.render());
   
       this.componentDidUpdate(this.props, prevState);
     } else {
