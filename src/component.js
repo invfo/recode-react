@@ -5,11 +5,11 @@ class Component {
   }
 
   static render(vdom, parent) {
-    const instance = new (vdom.type)(vdom.props); // new App(props)
+    const instance = new (vdom.type)(vdom.props); // == new App(props)
     instance.componentWillMount();
-    const element = instance.render()
-    instance.dom = render(element, parent);
-    instance.dom.__reactInstance = instance; // faut-il le garder ?
+    const element = instance.render() // == element <div><h1>todos</h1>...</div>
+    instance.dom = render(element, parent); // on mémorise le DOM rendu
+    instance.dom.__reactInstance = instance;
     instance.componentDidMount();
     return instance.dom;
   }
@@ -18,17 +18,18 @@ class Component {
     if (this.shouldComponentUpdate(this.props, nextState)) {
       const prevState = this.state;
       this.componentWillUpdate(this.props, nextState);
+  
       this.state = nextState;
-      Component.patch(this.dom, this.render());
+      patch(this.dom, this.dom.__reactInstance.render());
+  
       this.componentDidUpdate(this.props, prevState);
     } else {
       this.state = nextState;
     }
   }
 
-  static patch(dom, vdom) {
-    dom.__reactInstance.props = vdom.props;
-    return patch(dom, dom.__reactInstance.render());
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props != nextProps || this.state != nextState;
   }
 
   componentWillMount() {}
@@ -38,8 +39,4 @@ class Component {
   componentWillUpdate() {}
 
   componentDidUpdate() {}
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props != nextProps || this.state != nextState;
-  }
 }

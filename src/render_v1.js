@@ -1,39 +1,28 @@
-const render = (vdom, parent) => {
-  if (typeof(vdom) === 'object') {
-
+const render = (element, parent) => {
+  if (typeof(element) === 'string' || typeof element === 'number') {
+    const textNode = document.createTextNode(element);
+    parent.appendChild(textNode);
+    return textNode;
+  }
+  else if (typeof(element) === 'object') {
+    
     let node;
-
-    if (typeof(vdom.type) === 'string') {
-      node = document.createElement(vdom.type);
-    } else if (typeof(vdom.type) === 'function') {
-      node = Component.render(vdom, parent);
+    if (typeof(element.type) === 'string') {
+      node = document.createElement(element.type);
+    } else if (typeof(element.type) === 'function') {
+      node = Component.render(element, parent)
     }
 
     // gestion des props
-    Object.keys(vdom.props).map((prop) => {
-      if (prop === 'className') {
-        node.className = vdom.props[prop];
-      } else if (prop === 'value') {
-        node.value = vdom.props[prop];
-      } else if (prop === 'onClick') {
-        node.addEventListener('click', vdom.props[prop]);
-      } else if (prop === 'onChange') {
-        node.addEventListener('change', vdom.props[prop]);
-      }
-    })
+    addProps(node, element.props)
 
     // gestion des enfants
-    for (const child of [].concat(...vdom.children)) {
+    for (const child of [].concat(...element.children)) {
       render(child, node);
     }
 
     // ajout au DOM
     parent.appendChild(node);
     return node;
-  }
-  else if (typeof(vdom) === 'string' || typeof vdom === 'number') {
-    const textNode = document.createTextNode(vdom);
-    parent.appendChild(textNode);
-    return textNode;
   }
 };
