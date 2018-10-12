@@ -1,37 +1,42 @@
-const patch = (dom, element) => {
-  if ((typeof element  === 'string' || typeof element === 'number') && dom instanceof Text) {
-    if (dom.textContent !== element) {
-      dom.textContent = element;
+const patch = (oldElement, newElement) => {
+  if (
+      (typeof newElement  === 'string' || typeof newElement === 'number')
+      && oldElement instanceof Text
+    ) {
+      if (oldElement.textContent !== newElement) {
+        oldElement.textContent = newElement;
     }
-    return dom;
+    return oldElement;
   }
-  else if (typeof(element) === 'object' && element.type.toUpperCase() === dom.nodeName) {
+  else if (
+    typeof(newElement) === 'object' &&
+    newElement.type.toUpperCase() === oldElement.nodeName
+    ) {
 
     // update props
-    // used for updating "input" field value
-    for (const attr of dom.attributes) {
-      dom.removeAttribute(attr.name);
+    for (const attr of oldElement.attributes) {
+      oldElement.removeAttribute(attr.name);
     }
-    addProps(dom, element.props);
+    addProps(oldElement, newElement.props);
 
     // update children
     let pool = {};
 
-    dom.childNodes.forEach((child, index) => {
+    oldElement.childNodes.forEach((child, index) => {
       pool[index] = child;
     });
 
-    Array().concat(...element.children).forEach((child, index) => {
+    Array().concat(...newElement.children).forEach((child, index) => {
       if (pool[index]) {
         const newChild = patch(pool[index], child);
         if (newChild !== pool[index]) {
-          dom.appendChild(newChild);
+          oldElement.appendChild(newChild);
         }
       } else {
-        render(child, dom)
+        render(child, oldElement)
       }
     });
 
-    return dom;
+    return oldElement;
   }
 };
