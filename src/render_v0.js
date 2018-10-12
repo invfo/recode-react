@@ -1,9 +1,13 @@
 const render = (element, parent) => {
+  
+  // element == 'Hello World'
   if (typeof(element) === 'string' || typeof element === 'number') {
     const textNode = document.createTextNode(element);
     parent.appendChild(textNode);
     return textNode;
   }
+
+  // element == <div><h1>Hello World</h1></div>
   else if (typeof(element) === 'object') {
 
     let node = document.createElement(element.type);
@@ -23,9 +27,9 @@ const render = (element, parent) => {
 };
 
 const addProps = (node, props) => {
-  Object.keys(props).map((prop) => {
+  Object.keys(props).map(prop => {
     if (prop === 'className') {
-      node.className = props[prop];
+      node.className = props[prop]
     } else if (prop === 'value') {
       node.value = props[prop];
     } else if (prop === 'onClick') {
@@ -33,5 +37,5 @@ const addProps = (node, props) => {
     } else if (prop === 'onChange') {
       node.addEventListener('change', props[prop]);
     }
-  })
-}
+  });
+};
